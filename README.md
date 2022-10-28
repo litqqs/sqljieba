@@ -7,7 +7,54 @@
 
 ## Introduction
 
-Mysql Full-Text Parser Plugin
+MariaDB Full-Text Parser Plugin
+
+## windows版本用户
+
+安装 Msys2, clang 环境进行编译
+以下命令是基于 MariaDB的安装在 `c:/apps/mariadb` , 如果你的不是这个目录, 请自行修改.
+
+编译命令
+```
+clang++ -o sqljieba.dll \
+  -c sqljieba.cpp \
+  -shared -O2 -fPIC  \
+  -DMYSQL_DYNAMIC_PLUGIN \
+  -DMYSQL_ABI_CHECK \
+  -DLOGGING_LEVEL=LL_WARNING \
+  -I./deps/ \
+  -I/C/apps/mariadb/include/mysql/server/ \
+  -I/C/apps/mariadb/include/mysql/server/mysql/ 
+
+```
+复制插件到MariaDB插件目录
+```
+net stop MariaDB
+cp  -u sqljieba.dll    /c/apps/mariadb/lib/plugin/sqljieba.dll
+net start MariaDB
+```
+### 以下是我编译时遇到的问题修正
+出错信息
+```
+C:/apps/msys2/mingw64/include/sys/types.h:77:17: error: 'type-name' cannot be signed or unsigned
+typedef _mode_t mode_t;
+                ^
+C:/apps/mariadb/include/mysql/server/my_config.h:405:16: note: expanded from macro 'mode_t'
+#define mode_t unsigned short
+```
+修正方法
+修改   `C:/apps/mariadb/include/mysql/server/my_config.h` 第405行.  
+原本内容
+```
+#define mode_t unsigned short
+```
+新内容
+```
+#define mode_t _mode_t
+```
+
+
+
 
 ## Usage
 
