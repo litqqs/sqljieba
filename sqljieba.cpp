@@ -16,32 +16,30 @@ using cppjieba::Word;
 #define IDF_FILE "idf.utf8"
 #define STOPWORD_FILE "stop_words.utf8"
 
-// #define DEBUG_LOG 
 
-#ifdef DEBUG_LOG
+#ifdef _DEBUG
 static FILE *log_filehandle = NULL;
 
-#ifdef _WIN32
-#define LOG_FILE "C:/jieba_cut.log"
+#ifdef WIN32
+#define LOG_FILE "C:/jieba_cut2.log"
 #else
 #define LOG_FILE "/tmp/jieba_cut.log"
 #endif
 
 #endif
 
-#ifdef _WIN32
+#ifdef WIN32
 #include <libloaderapi.h>
 #else
 #define DICT_DIR "/usr/share/dict/"
-static const char *DICT_PATH = DICT_DIR DICT_FILE;
-static const char *MODEL_PATH = DICT_DIR MODEL_FILE;
+static const char *DICT_PATH      = DICT_DIR DICT_FILE;
+static const char *MODEL_PATH     = DICT_DIR MODEL_FILE;
 static const char *USER_DICT_PATH = DICT_DIR USER_DICT_FILE;
-static const char *IDF_PATH = DICT_DIR IDF_FILE;
-static const char *STOPWORD_PATH = DICT_DIR STOPWORD_FILE;
+static const char *IDF_PATH       = DICT_DIR IDF_FILE;
+static const char *STOPWORD_PATH  = DICT_DIR STOPWORD_FILE;
 #endif
 
 static const Jieba *jieba_handle = NULL;
-
 
 /*
   sqljieba interface functions:
@@ -73,12 +71,12 @@ static const Jieba *jieba_handle = NULL;
 
 static int sqljieba_plugin_init(void *arg)
 {
-#ifdef DEBUG_LOG
+#ifdef _DEBUG
   if (0 == access(LOG_FILE, 0))
     log_filehandle = fopen(LOG_FILE, "a");
 #endif
 
-#ifdef _WIN32
+#ifdef WIN32
   TCHAR DICT_DIR[256], DICT_PATH[256], MODEL_PATH[256], USER_DICT_PATH[256], IDF_PATH[256], STOPWORD_PATH[256];
   GetModuleFileName(NULL, DICT_DIR, 256);
   for (int n = strlen(DICT_DIR) - 1, i = 0; n >= 0; n--)
@@ -114,7 +112,7 @@ static int sqljieba_plugin_deinit(void *arg)
   {
     delete jieba_handle;
   }
-#ifdef DEBUG_LOG
+#ifdef _DEBUG
   if (log_filehandle)
     fclose(log_filehandle);
 #endif
@@ -207,7 +205,7 @@ static int sqljieba_parse(MYSQL_FTPARSER_PARAM *param)
     // more than 100 bytes
     if (words[i].word.size() > 100)
       continue;
-#ifdef DEBUG_LOG
+#ifdef _DEBUG
     if (log_filehandle)
     {
       fwrite(param->doc + words[i].offset, words[i].word.size(), 1, log_filehandle);
@@ -218,7 +216,7 @@ static int sqljieba_parse(MYSQL_FTPARSER_PARAM *param)
     // bool_info.position = words[i].offset;
     param->mysql_add_word(param, param->doc + words[i].offset, words[i].word.size(), &bool_info);
   }
-#ifdef DEBUG_LOG
+#ifdef _DEBUG
   if (log_filehandle)
     fwrite("\n", 1, 1, log_filehandle);
 #endif
