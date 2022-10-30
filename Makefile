@@ -6,15 +6,15 @@ MYSQL_LIB_PATH = /usr/lib/mysql
 CPPFLAGS = -DMYSQL_DYNAMIC_PLUGIN -DMYSQL_ABI_CHECK -DLOGGING_LEVEL=LL_WARNING
 CPPFLAGS += -I./deps/ -I$(MYSQL_PATH)
 
-MARIADB_SERVER_PATH=/C/apps/mariadb/include/mysql/server/
-MARIADB_LIB_PATH=/C/apps/mariadb/include/mysql/server/mysql/
+MARIADB_H_PATH=/C/apps/mariadb/include/mysql/
+
 
 libsqljieba.so:
 	g++ -O2 -fPIC -o sqljieba.o $(CPPFLAGS) -c sqljieba.cpp
 	g++ -shared -fPIC -o libsqljieba.so sqljieba.o
 
 sqljieba.dll:
-	clang++ -o sqljieba.dll -c sqljieba.cpp  -shared -O2 -fPIC  -DMYSQL_DYNAMIC_PLUGIN -DMYSQL_ABI_CHECK -DLOGGING_LEVEL=LL_WARNING -I./deps/ -I$(MARIADB_SERVER_PATH) -I$(MARIADB_LIB_PATH) 
+	clang++ -o sqljieba.dll -c sqljieba.cpp  -shared -O2 -fPIC  -DMYSQL_DYNAMIC_PLUGIN -DMYSQL_ABI_CHECK -DLOGGING_LEVEL=LL_WARNING -I./deps/ -I$(MARIADB_H_PATH)server/ -I$(MARIADB_H_PATH)server/mysql/ 
 
 clean:
 	rm -f *.so *.o *.dll
