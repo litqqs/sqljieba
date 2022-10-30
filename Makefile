@@ -9,11 +9,11 @@ CPPFLAGS += -I./deps/ -I$(MYSQL_PATH)
 MARIADB_H_PATH=/C/apps/mariadb/include/mysql/
 
 
-libsqljieba.so:
+libsqljieba.so: sqljieba.cpp
 	g++ -O2 -fPIC -o sqljieba.o $(CPPFLAGS) -c sqljieba.cpp
 	g++ -shared -fPIC -o libsqljieba.so sqljieba.o
 
-sqljieba.dll:
+sqljieba.dll: sqljieba.cpp
 	clang++ -o sqljieba.dll -c sqljieba.cpp  -shared -O2 -fPIC  -DMYSQL_DYNAMIC_PLUGIN -DMYSQL_ABI_CHECK -DLOGGING_LEVEL=LL_WARNING -I./deps/ -I$(MARIADB_H_PATH)server/ -I$(MARIADB_H_PATH)server/mysql/ 
 
 clean:
