@@ -29,6 +29,7 @@ clang++ -o sqljieba.dll \
 ```
 net stop MariaDB
 cp  -u sqljieba.dll    /c/apps/mariadb/lib/plugin/sqljieba.dll
+cp  -u -a dict   /c/apps/mariadb/lib/plugin/
 net start MariaDB
 ```
 ### 以下是我编译时遇到的问题修正
